@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VAJRA-SHIELD Incident",
+  "type": "object",
+  "required": ["incident_id", "observed_at", "severity", "status", "events"],
+  "properties": {
+    "incident_id": {"type": "string", "pattern": "^VS-[A-Z0-9-]+$"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "severity": {"enum": ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "status": {"enum": ["OBSERVED", "SUSPECTED", "CONFIRMED", "CONTAINED", "CLOSED"]},
+    "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "automation_likelihood": {"type": "number", "minimum": 0, "maximum": 1},
+    "attribution": {"$ref": "#/$defs/attribution"},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "actions": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "required": ["timestamp", "kind", "source"],
+      "properties": {
+        "timestamp": {"type": "string", "format": "date-time"},
+        "kind": {"type": "string"},
+        "source": {"type": "string"},
+        "asset": {"type": "string"},
+        "summary": {"type": "string"},
+        "attributes": {"type": "object"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["evidence_id", "sha256", "kind"],
+      "properties": {
+        "evidence_id": {"type": "string"},
+        "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+        "kind": {"type": "string"},
+        "location": {"type": "string"}
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "properties": {
+        "status": {"enum": ["UNKNOWN", "UNDER_INVESTIGATION", "SUSPECTED", "CORROBORATED"]},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "observed_infrastructure": {"type": "array", "items": {"type": "string"}},
+        "physical_location_established": {"type": "boolean"}
+      }
+    }
+  }
+}
