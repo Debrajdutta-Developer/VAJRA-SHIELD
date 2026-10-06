@@ -1,0 +1,13 @@
+[project]
+name = "vajra-shield"
+version = "0.1.0"
+description = "Self-hosted defensive cyber detection, analysis, alerting and forensic assurance platform"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+  "pydantic>=2.10,<3"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
