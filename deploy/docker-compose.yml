@@ -1,0 +1,40 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    environment:
+      VAJRA_MODE: self-hosted
+      VAJRA_AI_EGRESS: deny
+      VAJRA_DB_URL: postgresql://vajra:change-me@postgres:5432/vajra
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - postgres
+      - redis
+    networks: [vajra]
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: vajra
+      POSTGRES_USER: vajra
+      POSTGRES_PASSWORD: change-me
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [vajra]
+
+  redis:
+    image: redis:8
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks: [vajra]
+
+networks:
+  vajra:
+    internal: true
+
+volumes:
+  postgres_data:
+  redis_data:
